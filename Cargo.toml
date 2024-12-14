@@ -1,0 +1,20 @@
+[package]
+name = "nvim_rotate_chars"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+nvim-oxi = { version = "0.5.1", features = ["neovim-0-10"] }
+rayon = "1.10.0"
+
+[dev-dependencies]
+criterion = "0.5.1"
+rand = "0.8.5"
+
+
+[[bench]]
+name = "rotate_content_benchmark"
+harness = false
