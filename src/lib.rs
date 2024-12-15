@@ -4,9 +4,9 @@ use nvim_oxi as oxi;
 use oxi::{api, Dictionary, Function, Object};
 use std::usize;
 
-use operator::rotate_content;
+use operator::rotate_unicode_content;
 
-fn get_visual_selection_content(buffer: api::Buffer) -> oxi::Result<(usize, usize)> {
+fn get_visual_selection_content(buffer: &api::Buffer) -> oxi::Result<(usize, usize)> {
     let start_mark = buffer.get_mark('<')?;
     let end_mark = buffer.get_mark('>')?;
     let start_row = start_mark.0;
@@ -37,7 +37,9 @@ fn rotate_chars(
         .map(|(_, s)| s.to_string())
         .collect::<Vec<_>>();
 
-    let rotated_content = rotate_content(&content_string_list, direction, steps as u8);
+    // let rotated_content = rotate_content(&content_string_list, direction, steps as u8);
+
+    let rotated_content = rotate_unicode_content(&content_string_list, direction, steps as u8, false);
 
     // 替换选中的内容
     buffer.set_lines(row_range, false, rotated_content)?;
@@ -53,14 +55,14 @@ fn nvim_rotate_chars() -> Dictionary {
         let mut buffer = api::get_current_buf();
 
         // 获取选中的范围
-        let selection = get_visual_selection_content(buffer.clone()).unwrap();
+        let selection = get_visual_selection_content(&buffer).unwrap();
 
-        println!("selection : {:?}", selection);
+        // println!("selection : {:?}", selection);
 
         // convert selection to range
         let selection = std::ops::Range {
             start: selection.0 - 1,
-            end: selection.1 ,
+            end: selection.1,
         };
 
         // 调用旋转函数
